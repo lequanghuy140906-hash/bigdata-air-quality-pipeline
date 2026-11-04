@@ -1,0 +1,678 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 100,
+      "title": "THỐNG KÊ TỔNG QUAN (REAL-TIME NATIONWIDE METRICS)",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "ClickHouse"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue", "value": null }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 1
+      },
+      "id": 1,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.4.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "ClickHouse"
+          },
+          "format": 1,
+          "queryType": "sql",
+          "rawSql": "SELECT count(*) AS total_records FROM default.air_quality_data",
+          "refId": "A"
+        }
+      ],
+      "title": "Tổng số bản ghi đã nạp",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "ClickHouse"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "#73BF69", "value": null },
+              { "color": "#FADE2A", "value": 50 },
+              { "color": "#FF9830", "value": 100 },
+              { "color": "#F2495C", "value": 150 }
+            ]
+          },
+          "unit": "µg/m³"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 1
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.4.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "ClickHouse"
+          },
+          "format": 1,
+          "queryType": "sql",
+          "rawSql": "SELECT round(avg(pm25), 2) AS avg_pm25 FROM default.air_quality_data",
+          "refId": "A"
+        }
+      ],
+      "title": "Nồng độ Bụi PM2.5 Trung Bình",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "ClickHouse"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "#73BF69", "value": null },
+              { "color": "#F2495C", "value": 1 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 1
+      },
+      "id": 3,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.4.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "ClickHouse"
+          },
+          "format": 1,
+          "queryType": "sql",
+          "rawSql": "SELECT count(*) AS anomaly_count FROM default.air_quality_data WHERE is_anomaly = 1",
+          "refId": "A"
+        }
+      ],
+      "title": "Số lượng cảnh báo Ô Nhiễm Khẩn Cấp (Đỏ)",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "ClickHouse"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "#B877D9", "value": null }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 1
+      },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.4.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "ClickHouse"
+          },
+          "format": 1,
+          "queryType": "sql",
+          "rawSql": "SELECT uniq(station_id) AS active_stations FROM default.air_quality_data WHERE source IN ('REAL_OPEN_METEO_API', 'IOT_NATIONWIDE_SENSOR')",
+          "refId": "A"
+        }
+      ],
+      "title": "Số trạm quan trắc (5 Trạm API + 500 IoT)",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 5
+      },
+      "id": 101,
+      "title": "BẢN ĐỒ NHIỆT Ô NHIỄM KHÔNG KHÍ TOÀN QUỐC (VIETNAM AIR QUALITY HEATMAP)",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "ClickHouse"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "field": "pm25",
+            "mode": "thresholds"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "#73BF69", "value": null },
+              { "color": "#FADE2A", "value": 50 },
+              { "color": "#FF9830", "value": 100 },
+              { "color": "#F2495C", "value": 150 }
+            ]
+          },
+          "unit": "µg/m³"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 14,
+        "w": 14,
+        "x": 0,
+        "y": 6
+      },
+      "id": 6,
+      "options": {
+        "basemap": {
+          "config": {
+            "attribution": "Esri, HERE, Garmin, © OpenStreetMap contributors",
+            "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}"
+          },
+          "name": "ArcGIS World Street Map (Free)",
+          "type": "xyz"
+        },
+        "controls": {
+          "mouseWheelZoom": true,
+          "showAttribution": false,
+          "showDebug": false,
+          "showScale": true,
+          "showZoom": true
+        },
+        "layers": [
+          {
+            "config": {
+              "blur": 15,
+              "radius": 25,
+              "weight": {
+                "field": "pm25",
+                "fixed": 1,
+                "max": 1,
+                "min": 0
+              }
+            },
+            "filterData": {
+              "id": "byRefId",
+              "options": "A"
+            },
+            "location": {
+              "latitude": "lat",
+              "longitude": "lon",
+              "mode": "coords"
+            },
+            "name": "Vùng Phủ Ô Nhiễm Toàn Quốc (Heatmap)",
+            "tooltip": false,
+            "type": "heatmap"
+          },
+          {
+            "config": {
+              "color": {
+                "field": "pm25"
+              },
+              "showLegend": true,
+              "size": {
+                "field": "pm25",
+                "max": 14,
+                "min": 5
+              }
+            },
+            "filterData": {
+              "id": "byRefId",
+              "options": "A"
+            },
+            "location": {
+              "latitude": "lat",
+              "longitude": "lon",
+              "mode": "coords"
+            },
+            "name": "500 Trạm Cảm Biến IoT Vệ Tinh",
+            "tooltip": true,
+            "type": "markers"
+          },
+          {
+            "config": {
+              "color": {
+                "fixed": "#3274D9"
+              },
+              "fillOpacity": 1,
+              "showLegend": true,
+              "size": {
+                "fixed": 18
+              },
+              "symbol": {
+                "fixed": "img/icons/marker/star.svg",
+                "mode": "fixed"
+              }
+            },
+            "filterData": {
+              "id": "byRefId",
+              "options": "B"
+            },
+            "location": {
+              "latitude": "lat",
+              "longitude": "lon",
+              "mode": "coords"
+            },
+            "name": "5 TRẠM KHÍ TƯỢNG TRUNG TÂM (OPEN-METEO API)",
+            "tooltip": true,
+            "type": "markers"
+          }
+        ],
+        "tooltip": {
+          "mode": "details"
+        },
+        "view": {
+          "allLayers": true,
+          "id": "coords",
+          "lat": 16.0,
+          "lon": 107.5,
+          "zoom": 6
+        }
+      },
+      "pluginVersion": "10.4.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "ClickHouse"
+          },
+          "format": 1,
+          "queryType": "sql",
+          "rawSql": "SELECT station_id, station_name, city, latitude AS lat, longitude AS lon, argMax(pm25, timestamp) AS pm25, argMax(aqi_status, timestamp) AS aqi_status FROM default.air_quality_data WHERE source = 'IOT_NATIONWIDE_SENSOR' GROUP BY station_id, station_name, city, lat, lon",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "ClickHouse"
+          },
+          "format": 1,
+          "queryType": "sql",
+          "rawSql": "SELECT station_id, station_name, city, source, latitude AS lat, longitude AS lon, argMax(pm25, timestamp) AS pm25, argMax(pm10, timestamp) AS pm10, argMax(co, timestamp) AS co, argMax(aqi_status, timestamp) AS aqi_status FROM default.air_quality_data WHERE source = 'REAL_OPEN_METEO_API' GROUP BY station_id, station_name, city, source, lat, lon",
+          "refId": "B"
+        }
+      ],
+      "title": "Bản Đồ 5 Trạm Khí Tượng Trung Tâm (Xanh Dương) & 500 Trạm IoT Vệ Tinh",
+      "type": "geomap"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "ClickHouse"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "#73BF69", "value": null },
+              { "color": "#FF9830", "value": 100 },
+              { "color": "#F2495C", "value": 150 }
+            ]
+          },
+          "unit": "µg/m³"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 14,
+        "w": 10,
+        "x": 14,
+        "y": 6
+      },
+      "id": 7,
+      "options": {
+        "barRadius": 0.1,
+        "barWidth": 0.7,
+        "groupWidth": 0.7,
+        "legend": {
+          "displayMode": "hidden",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "orientation": "horizontal",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "10.4.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "ClickHouse"
+          },
+          "format": 1,
+          "queryType": "sql",
+          "rawSql": "SELECT station_name, round(max(pm25), 1) AS max_pm25 FROM default.air_quality_data GROUP BY station_name ORDER BY max_pm25 DESC LIMIT 12",
+          "refId": "A"
+        }
+      ],
+      "title": "Top 12 Điểm Nóng Ô Nhiễm Nhất Cả Nước",
+      "type": "barchart"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 20
+      },
+      "id": 103,
+      "title": "5 TRẠM KHÍ TƯỢNG TRUNG TÂM QUỐC GIA (NGUỒN DỮ LIỆU THỰC TẾ: OPEN-METEO API)",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "ClickHouse"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue", "value": null }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "aqi_status"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 21
+      },
+      "id": 8,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": ["sum"],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "10.4.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "ClickHouse"
+          },
+          "format": 1,
+          "queryType": "sql",
+          "rawSql": "SELECT max(timestamp) AS last_updated, station_id, station_name, city, source, argMax(pm25, timestamp) AS pm25, argMax(pm10, timestamp) AS pm10, argMax(co, timestamp) AS co, argMax(no2, timestamp) AS no2, argMax(so2, timestamp) AS so2, argMax(ozone, timestamp) AS ozone, argMax(aqi_status, timestamp) AS aqi_status FROM default.air_quality_data WHERE source = 'REAL_OPEN_METEO_API' GROUP BY station_id, station_name, city, source ORDER BY station_id ASC",
+          "refId": "A"
+        }
+      ],
+      "title": "Số Liệu Quan Trắc Thực Tế Tại 5 Trạm Khí Tượng Trung Tâm (Open-Meteo API)",
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 27
+      },
+      "id": 102,
+      "title": "NHẬT KÝ SỰ KIỆN CHI TIẾT (LIVE EVENT LOGS - CẢ 2 NGUỒN)",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "ClickHouse"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "aqi_status"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 28
+      },
+      "id": 5,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": ["sum"],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "10.4.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "ClickHouse"
+          },
+          "format": 1,
+          "queryType": "sql",
+          "rawSql": "SELECT timestamp, source, station_id, station_name, city, pm25, pm10, co, traffic_density, aqi_status FROM default.air_quality_data ORDER BY timestamp DESC LIMIT 40",
+          "refId": "A"
+        }
+      ],
+      "title": "Bảng Dòng Sự Kiện Thời Gian Thực (Tự động cập nhật mỗi 5 giây)",
+      "type": "table"
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 39,
+  "tags": ["IoT", "AirQuality", "SmartCity"],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "SMART CITY - GIÁM SÁT Ô NHIỄM KHÔNG KHÍ REALTIME",
+  "uid": "air_quality_dashboard",
+  "version": 13
+}

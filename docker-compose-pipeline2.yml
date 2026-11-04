@@ -1,0 +1,204 @@
+services:
+  redpanda-1:
+    image: docker.redpanda.com/redpandadata/redpanda:v23.3.10
+    container_name: redpanda-1
+    hostname: redpanda-1
+    command:
+      - redpanda start
+      - --node-id 1
+      - --smp 1
+      - --memory 256M
+      - --reserve-memory 0M
+      - --overprovisioned
+      - --rpc-addr 0.0.0.0:33145
+      - --advertise-rpc-addr redpanda-1:33145
+      - --kafka-addr internal://0.0.0.0:9092,external://0.0.0.0:19092
+      - --advertise-kafka-addr internal://redpanda-1:9092,external://localhost:19092
+      - --pandaproxy-addr 0.0.0.0:8082
+      - --advertise-pandaproxy-addr localhost:8082
+    ports:
+      - "19092:19092"
+      - "9092:9092"
+    networks:
+      - pipeline2-net
+
+  redpanda-2:
+    image: docker.redpanda.com/redpandadata/redpanda:v23.3.10
+    container_name: redpanda-2
+    hostname: redpanda-2
+    command:
+      - redpanda start
+      - --node-id 2
+      - --smp 1
+      - --memory 256M
+      - --reserve-memory 0M
+      - --overprovisioned
+      - --rpc-addr 0.0.0.0:33145
+      - --advertise-rpc-addr redpanda-2:33145
+      - --seeds redpanda-1:33145
+      - --kafka-addr internal://0.0.0.0:9092,external://0.0.0.0:19093
+      - --advertise-kafka-addr internal://redpanda-2:9092,external://localhost:19093
+    ports:
+      - "19093:19093"
+    depends_on:
+      - redpanda-1
+    networks:
+      - pipeline2-net
+
+  redpanda-3:
+    image: docker.redpanda.com/redpandadata/redpanda:v23.3.10
+    container_name: redpanda-3
+    hostname: redpanda-3
+    command:
+      - redpanda start
+      - --node-id 3
+      - --smp 1
+      - --memory 256M
+      - --reserve-memory 0M
+      - --overprovisioned
+      - --rpc-addr 0.0.0.0:33145
+      - --advertise-rpc-addr redpanda-3:33145
+      - --seeds redpanda-1:33145
+      - --kafka-addr internal://0.0.0.0:9092,external://0.0.0.0:19094
+      - --advertise-kafka-addr internal://redpanda-3:9092,external://localhost:19094
+    ports:
+      - "19094:19094"
+    depends_on:
+      - redpanda-1
+    networks:
+      - pipeline2-net
+
+  redpanda-console:
+    image: docker.redpanda.com/redpandadata/console:v2.4.5
+    container_name: redpanda-console
+    ports:
+      - "8088:8080"
+    environment:
+      KAFKA_BROKERS: "redpanda-1:9092,redpanda-2:9092,redpanda-3:9092"
+    depends_on:
+      - redpanda-1
+      - redpanda-2
+      - redpanda-3
+    networks:
+      - pipeline2-net
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:24.3-alpine
+    container_name: clickhouse-server
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    environment:
+      CLICKHOUSE_DB: default
+      CLICKHOUSE_USER: default
+      CLICKHOUSE_PASSWORD: "clickhouse123"
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    volumes:
+      - clickhouse-data:/var/lib/clickhouse
+    networks:
+      - pipeline2-net
+
+  grafana:
+    image: grafana/grafana-oss:10.4.1
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_INSTALL_PLUGINS=grafana-clickhouse-datasource
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./pipeline2_modern/grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - clickhouse
+    networks:
+      - pipeline2-net
+
+  postgres:
+    image: postgres:13
+    container_name: p2-postgres
+    environment:
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+      - POSTGRES_DB=airflow
+    networks:
+      - pipeline2-net
+
+  airflow-init:
+    image: apache/airflow:2.6.0-python3.8
+    container_name: p2-airflow_init
+    environment:
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@p2-postgres:5432/airflow
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__WEBSERVER__SECRET_KEY=smart_city_secret_key_12345
+      - AIRFLOW__CORE__FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqJZPo=
+    depends_on:
+      - postgres
+    command: >
+      bash -c "airflow db init &&
+      airflow users create --username airflow --password airflow --firstname Airflow --lastname Admin --role Admin --email admin@example.com"
+    networks:
+      - pipeline2-net
+
+  airflow-webserver:
+    image: apache/airflow:2.6.0-python3.8
+    container_name: p2-airflow_webserver
+    restart: always
+    environment:
+      - EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@p2-postgres:5432/airflow
+      - AIRFLOW__WEBSERVER__SECRET_KEY=smart_city_secret_key_12345
+      - AIRFLOW__CORE__FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqJZPo=
+      - REDPANDA_BROKERS=redpanda-1:9092,redpanda-2:9092,redpanda-3:9092
+    ports:
+      - "8085:8080"
+    volumes:
+      - ./pipeline1_baseline/dags:/opt/airflow/dags
+      - ./pipeline1_baseline:/opt/airflow/pipeline1_baseline
+      - ./pipeline2_modern:/opt/airflow/pipeline2_modern
+      - ./data_producers:/opt/airflow/data_producers
+    depends_on:
+      airflow-init:
+        condition: service_completed_successfully
+    command: bash -c "airflow webserver"
+    networks:
+      - pipeline2-net
+
+  airflow-scheduler:
+    image: apache/airflow:2.6.0-python3.8
+    container_name: p2-airflow_scheduler
+    restart: always
+    environment:
+      - EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@p2-postgres:5432/airflow
+      - AIRFLOW__WEBSERVER__SECRET_KEY=smart_city_secret_key_12345
+      - AIRFLOW__CORE__FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqJZPo=
+      - REDPANDA_BROKERS=redpanda-1:9092,redpanda-2:9092,redpanda-3:9092
+    volumes:
+      - ./pipeline1_baseline/dags:/opt/airflow/dags
+      - ./pipeline1_baseline:/opt/airflow/pipeline1_baseline
+      - ./pipeline2_modern:/opt/airflow/pipeline2_modern
+      - ./data_producers:/opt/airflow/data_producers
+    depends_on:
+      airflow-init:
+        condition: service_completed_successfully
+    command: bash -c "pip install kafka-python requests && airflow scheduler"
+    networks:
+      - pipeline2-net
+
+volumes:
+  clickhouse-data:
+  grafana-data:
+
+networks:
+  pipeline2-net:
+    driver: bridge

@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  airflow-init:
+    image: apache/airflow:2.6.0-python3.8
+    container_name: p1-airflow_init
+    environment:
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@p1-postgres:5432/airflow
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__WEBSERVER__SECRET_KEY=smart_city_secret_key_12345
+      - AIRFLOW__CORE__FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqJZPo=
+    depends_on:
+      - postgres
+    command: >
+      bash -c "airflow db init &&
+      airflow users create --username airflow --password airflow --firstname Airflow --lastname Admin --role Admin --email admin@example.com"
+    networks:
+      - p1-kafka-network
+
+  airflow-webserver:
+    image: apache/airflow:2.6.0-python3.8
+    container_name: p1-airflow_webserver
+    restart: always
+    environment:
+      - EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@p1-postgres:5432/airflow
+      - AIRFLOW__WEBSERVER__SECRET_KEY=smart_city_secret_key_12345
+      - AIRFLOW__CORE__FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqJZPo=
+      - KAFKA_BOOTSTRAP_SERVERS=kafka1:19092
+    ports:
+      - "8085:8080"
+    volumes:
+      - ./pipeline1_baseline/dags:/opt/airflow/dags
+      - ./pipeline1_baseline:/opt/airflow/pipeline1_baseline
+      - ./data_producers:/opt/airflow/data_producers
+    depends_on:
+      - airflow-init
+    command: bash -c "airflow webserver"
+    networks:
+      - p1-kafka-network
+
+  airflow-scheduler:
+    image: apache/airflow:2.6.0-python3.8
+    container_name: p1-airflow_scheduler
+    restart: always
+    environment:
+      - EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@p1-postgres:5432/airflow
+      - AIRFLOW__WEBSERVER__SECRET_KEY=smart_city_secret_key_12345
+      - AIRFLOW__CORE__FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqJZPo=
+      - KAFKA_BOOTSTRAP_SERVERS=kafka1:19092
+    volumes:
+      - ./pipeline1_baseline/dags:/opt/airflow/dags
+      - ./pipeline1_baseline:/opt/airflow/pipeline1_baseline
+      - ./data_producers:/opt/airflow/data_producers
+    depends_on:
+      - airflow-init
+    command: bash -c "pip install kafka-python requests && airflow scheduler"
+    networks:
+      - p1-kafka-network
+
+  postgres:
+    image: postgres:13
+    container_name: p1-postgres
+    environment:
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+      - POSTGRES_DB=airflow
+    networks:
+      - p1-kafka-network
+
+networks:
+  p1-kafka-network:
+    external: true
+    name: final_exam_p1-kafka-network
