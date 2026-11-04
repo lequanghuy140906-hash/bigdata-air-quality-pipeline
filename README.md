@@ -26,7 +26,7 @@ Kho lưu trữ này bao gồm đầy đủ báo cáo học thuật, slide thuy�
 | :-: | :--- | :--- | :--- |
 | **01** | **Báo cáo Bài tập lớn (.docx)** | [`docs/BAO_CAO_BAI_TAP_LON_CUOI_KY_NVPQ_LQH.docx`](./docs/BAO_CAO_BAI_TAP_LON_CUOI_KY_NVPQ_LQH.docx) | Bản báo cáo kỹ thuật đầy đủ 8 phần (kiến trúc, lược đồ dữ liệu, triển khai và thực nghiệm). |
 | **02** | **Slide Trình bày (.pptx)** | [`docs/Hệ thống phân tích dữ liệu chất lượng không khí.pptx`](./docs/H%E1%BB%87%20th%E1%BB%91ng%20ph%C3%A2n%20t%C3%ADch%20d%E1%BB%AF%20li%E1%BB%87u%20ch%E1%BA%A5t%20l%C6%B0%E1%BB%A3ng%20kh%C3%B4ng%20kh%C3%AD.pptx) | Bản trình chiếu tóm tắt kiến trúc, luồng xử lý và kết quả thực nghiệm phục vụ báo cáo trước hội đồng. |
-| **03** | **Mã nguồn & Hướng dẫn thực thi** | [Mục 3 – Cấu trúc mã nguồn](#3-cấu-trúc-thư-mục-dự-án) & [Mục 4 – Hướng dẫn thực thi](#4-hướng-dẫn-triển-khai-và-thực-thi-hệ-thống) | Toàn bộ tệp cấu hình Docker Compose, tập lệnh SQL/CQL, DAG Airflow và Python Producer. |
+| **03** | **Mã nguồn & Hướng dẫn thực thi** | [`HUONG_DAN_CAI_DAT_VA_CHAY.md`](./HUONG_DAN_CAI_DAT_VA_CHAY.md) & [Mục 4 bên dưới](#4-hướng-dẫn-triển-khai-và-thực-thi-hệ-thống) | Tài liệu hướng dẫn chi tiết từng bước cài đặt, khởi chạy Docker Compose, nạp SQL và chạy kiểm thử. |
 | **04** | **Bộ dữ liệu & Nguồn dữ liệu** | [Mục 2 – Nguồn dữ liệu và Lược đồ bản tin](#2-nguồn-dữ-liệu-thu-thập-và-lược-đồ-bản-tin) | Đường dẫn Open-Meteo REST API (CAMS Global) và mã nguồn giả lập 500 cảm biến IoT. |
 | **05** | **Kết quả chạy thử & Kiểm thử** | [Mục 5 – Kết quả thực nghiệm](#5-kết-quả-vận-hành-và-minh-chứng-kiểm-thử) & [`docs/images/`](./docs/images/) | Minh chứng chạy DAG Airflow, cụm 3 Broker Redpanda, chịu lỗi khi ngắt ClickHouse và so sánh hiệu năng. |
 | **06** | **Danh sách thành viên & Đóng góp** | [Mục 6 – Thành viên thực hiện và Phân công](#6-danh-sách-thành-viên-phân-công-nhiệm-vụ-và-mô-tả-đóng-góp) | Thông tin chi tiết thành viên, mã số sinh viên, nhiệm vụ đảm nhiệm và tỷ lệ đóng góp. |
@@ -116,12 +116,15 @@ Hệ thống hợp nhất dữ liệu từ **2 nguồn độc lập** và chuẩ
 ```text
 bigdata-air-quality-pipeline/
 ├── README.md                                  # Tài liệu tổng quan, kiến trúc, hướng dẫn và kết quả thực nghiệm
+├── HUONG_DAN_CAI_DAT_VA_CHAY.md               # Tài liệu hướng dẫn chi tiết cài đặt, thực thi và kiểm thử từng bước
+├── requirements.txt                           # Danh sách các gói thư viện Python cần thiết
 ├── docker-compose-pipeline2.yml               # Cấu hình Docker Compose Pipeline 2 (Airflow, 3 Redpanda, ClickHouse, Grafana)
 ├── docker-compose-pipeline1.yml               # Cấu hình Docker Compose Pipeline 1 (ZooKeeper, 3 Kafka, Kafka UI, Cassandra)
 ├── docker-compose-pipeline1-airflow.yml       # Cấu hình Docker Compose dịch vụ Airflow cho Pipeline 1
-├── docs/                                      # Hồ sơ báo cáo, Slide trình bày và minh chứng thực nghiệm
+├── docs/                                      # Hồ sơ báo cáo, Slide trình bày, đề bài và minh chứng thực nghiệm
 │   ├── BAO_CAO_BAI_TAP_LON_CUOI_KY_NVPQ_LQH.docx
 │   ├── Hệ thống phân tích dữ liệu chất lượng không khí.pptx
+│   ├── DE_BAI_TAP_LON_CUOI_KY.pdf
 │   ├── architecture_pipeline2.png
 │   ├── architecture_pipeline1.png
 │   └── images/                                # Tập hợp 15 ảnh chụp màn hình vận hành và kiểm thử hệ thống
