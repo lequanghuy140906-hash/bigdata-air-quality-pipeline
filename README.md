@@ -1,6 +1,6 @@
 <div align="center">
 
-# HỆ THỐNG PHÂN TÍCH DỮ LIỆU CHẤT LƯỢNG KHÔNG KHÍ TỪ API VÀ CẢM BIẾN IOT GIẢ LẬP THEO THỜI GIAN GẦN THỰC
+# HỆ THỐNG THU THẬP VÀ PHÂN TÍCH DỮ LIỆU CHẤT LƯỢNG KHÔNG KHÍ TỪ API VÀ CẢM BIẾN IoT GIẢ LẬP
 
 **Real-Time Air Quality Analytics Pipeline with Redpanda, ClickHouse, Apache Airflow, and Grafana**
 

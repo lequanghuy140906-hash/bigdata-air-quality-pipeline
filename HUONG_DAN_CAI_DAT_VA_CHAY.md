@@ -1,6 +1,6 @@
 # HƯỚNG DẪN CÀI ĐẶT, TRIỂN KHAI VÀ VẬN HÀNH HỆ THỐNG
 
-Tài liệu này hướng dẫn chi tiết từng bước cài đặt môi trường, khởi chạy hạ tầng Docker Compose, nạp lược đồ cơ sở dữ liệu, kích hoạt luồng thu thập dữ liệu và thực hiện các kịch bản kiểm thử cho đề tài **Hệ thống phân tích dữ liệu chất lượng không khí từ API và cảm biến IoT giả lập theo thời gian gần thực**.
+Tài liệu này hướng dẫn chi tiết từng bước cài đặt môi trường, khởi chạy hạ tầng Docker Compose, nạp lược đồ cơ sở dữ liệu, kích hoạt luồng thu thập dữ liệu và thực hiện các kịch bản kiểm thử cho đề tài **Hệ thống thu thập và phân tích dữ liệu chất lượng không khí từ API và cảm biến IoT giả lập**.
 
 ---
 
